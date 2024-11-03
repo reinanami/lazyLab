@@ -14,23 +14,17 @@
     <div id="result"></div>
 
     <script>
-        document.getElementById('commandForm').onsubmit = function(e) {
-            e.preventDefault();
-            const answer = document.getElementById('command').value;
-            let result;
+        function main(command) {
+            return `You entered: ${command}`;
+        }
 
-            if (answer === "L") {
-                result = "You have chosen to proceed!";
-                // Call functions() equivalent here if needed
-            } else if (answer === "HELP") {
-                result = "Here's some help with significant figures...";
-                // Call sigfiginfodump() equivalent here if needed
-            } else {
-                result = "Type as prompted bruh... try again.";
-            }
-
+        document.getElementById('commandForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const commandInput = document.getElementById('command').value;
+            const result = main(commandInput);
             document.getElementById('result').innerText = result;
-        };
+            document.getElementById('command').value = '';
+        });
     </script>
 </body>
 </html>
