@@ -59,9 +59,7 @@ def percent_confidence(mean, n, std_dev):
     else:
         raise ValueError("WIP for 7 and up")
     
-    margin_of_error = t_value * (std_dev / math.sqrt(n))
-    
-    per_con = (mean - margin_of_error, mean + margin_of_error)
+    per_con = t_value * (std_dev / math.sqrt(n))
 
     return per_con
 
