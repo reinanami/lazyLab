@@ -91,5 +91,4 @@ def sigfiginfodump():
     print("Let's say the average was 0.99939... it should be rounded to 3 sigfigs where it becomes 0.999")
     print("Use that sigfigs to calculate the standard deviation and stuff... but it's ok this is why this program exists.")
 
-while(1):
-    main()
+main()

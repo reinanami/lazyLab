@@ -1,0 +1,30 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run Python Script</title>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+    <form id="commandForm">
+        <input type="text" name="command" placeholder="Enter command" required>
+        <button type="submit">Run</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('commandForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/run', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.text();
+            document.getElementById('result').innerText = result;
+        };
+    </script>
+</body>
+</html>
