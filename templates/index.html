@@ -1,28 +1,34 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Run Python Script</title>
+    <title>LazyLab</title>
 </head>
 <body>
     <h1>Welcome to lazyLab</h1>
     <form id="commandForm">
-        <input type="text" name="command" placeholder="Enter command" required>
+        <input type="text" id="command" placeholder="Enter command" required>
         <button type="submit">Run</button>
     </form>
     <div id="result"></div>
 
     <script>
-        document.getElementById('commandForm').onsubmit = async function(e) {
+        document.getElementById('commandForm').onsubmit = function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
-            const response = await fetch('https://lazylab.herokuapp.com/run', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.text();
+            const answer = document.getElementById('command').value;
+            let result;
+
+            if (answer === "L") {
+                result = "You have chosen to proceed!";
+                // Call functions() equivalent here if needed
+            } else if (answer === "HELP") {
+                result = "Here's some help with significant figures...";
+                // Call sigfiginfodump() equivalent here if needed
+            } else {
+                result = "Type as prompted bruh... try again.";
+            }
+
             document.getElementById('result').innerText = result;
         };
     </script>
