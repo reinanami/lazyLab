@@ -6,9 +6,14 @@ def main():
     n = int(input("Enter number of data points: "))
     data = data_calculator(n)
     mean = mean_calculator(data)
-    std_dev = standard_deviation(mean, n, data)
-    per_con = percent_confidence(mean, n, std_dev)
-
+    print("This is the raw mean: ", mean)
+    mean_right_sigfig = float(input("Please enter mean of right sigfigs: "))
+    std_dev = standard_deviation(mean_right_sigfig, n, data)
+    print("This is the raw standard deviation: ", std_dev)
+    std_dev_right_sigfig = float(input("Please enter the standard deviation of right sigfigs: "))
+    per_con = percent_confidence(mean_right_sigfig, n, std_dev_right_sigfig)
+    print(" ")
+    print("HERE GOES!!!")
     print(f"Mean: {mean}")
     print(f"Standard deviation: {std_dev}")
     print(f"Percent confidence interval (90%): {per_con}")
@@ -37,7 +42,7 @@ def standard_deviation(mean, n, data):
     
     squared_diffs = [(x - mean) ** 2 for x in data]
     
-    variance = sum(squared_diffs) / n
+    variance = sum(squared_diffs) / (n - 1)
 
     std_dev = math.sqrt(variance)
     
@@ -64,5 +69,4 @@ def percent_confidence(mean, n, std_dev):
     return per_con
 
 
-while(1):
-    main()
+main()
