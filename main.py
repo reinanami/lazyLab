@@ -3,16 +3,14 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-def functions(n, data_points, mean_right_sigfig, std_dev_right_sigfig):
+def functions(n, data_points):
     data = [float(i) for i in data_points.split(',')]  # Convert comma-separated data points to a list of floats
     mean = mean_calculator(data)
     output = f"This is the raw mean: {mean}\n"
-    std_dev = standard_deviation(mean_right_sigfig, n, data)
+    std_dev = standard_deviation(mean, n, data)
     output += f"This is the raw standard deviation: {std_dev}\n"
-    per_con = percent_confidence(mean_right_sigfig, n, std_dev_right_sigfig)
-    output += f"Mean: {mean}\n"
-    output += f"Standard deviation: {std_dev}\n"
-    output += f"Percent confidence interval (90%): {per_con}\n"
+    output += "Please enter the rounded mean and standard deviation values.\n"
+    output += "Once done, the program will calculate the percent confidence interval.\n"
     return output
 
 
@@ -34,6 +32,7 @@ def standard_deviation(mean, n, data):
     std_dev = math.sqrt(variance)
     
     return std_dev
+
 
 def percent_confidence(mean, n, std_dev):
 
@@ -65,18 +64,34 @@ def execute_command():
     command = request.args.get('command')
     n = int(request.args.get('n', 5))  # Default to 5 data points
     data_points = request.args.get('data_points', '1,2,3,4,5')  # Default data points
-    mean_right_sigfig = float(request.args.get('mean_right_sigfig', 3.0))  # Default sigfigs
-    std_dev_right_sigfig = float(request.args.get('std_dev_right_sigfig', 2.0))  # Default sigfigs
-    
+
     if command == 'L':  # Proceed if the command is 'L'
         try:
             # Call the functions with the parameters received
-            output = functions(n, data_points, mean_right_sigfig, std_dev_right_sigfig)
+            output = functions(n, data_points)
             return output
         except Exception as e:
             return f"Error: {str(e)}"
     else:
         return "Invalid command"
+
+@app.route('/calculateConfidence', methods=['GET'])
+def calculate_confidence():
+    # Retrieve user inputs
+    mean_right_sigfig = float(request.args.get('mean_right_sigfig'))
+    std_dev_right_sigfig = float(request.args.get('std_dev_right_sigfig'))
+    n = int(request.args.get('n'))
+    data_points = request.args.get('data_points')
+
+    # Proceed with calculating the percent confidence interval
+    data = [float(i) for i in data_points.split(',')]
+    mean = mean_calculator(data)
+    std_dev = standard_deviation(mean, n, data)
+
+    # Using the user-provided rounded values to calculate the confidence interval
+    per_con = percent_confidence(mean_right_sigfig, n, std_dev_right_sigfig)
+    
+    return f"Percent confidence interval (90%): {per_con}"
 
 if __name__ == "__main__":
     app.run(debug=True)
