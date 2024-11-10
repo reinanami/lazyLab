@@ -1,47 +1,19 @@
-import numpy as np
 import math
+from flask import Flask, request
 
-def main():
-    print("Welcome to lazyLab because we hate entering things into L*bflow!")
-    answer = input("Press L to proceed, press HELP if you don't know sigfigs: ")
-    if answer == "L":
-        functions()
-        print(" ")
-        return 0
-    elif answer == "HELP":
-        sigfiginfodump()
-        print(" ")
-        return 0
-    else:
-        print("Type as prompted bruh... try again.")
-        print(" ")
-        return 0
+app = Flask(__name__)
 
-def functions():
-    n = int(input("Enter number of data points: "))
-    data = data_calculator(n)
+def functions(n, data_points, mean_right_sigfig, std_dev_right_sigfig):
+    data = [float(i) for i in data_points.split(',')]  # Convert comma-separated data points to a list of floats
     mean = mean_calculator(data)
-    print("This is the raw mean: ", mean)
-    mean_right_sigfig = float(input("Please enter mean of right sigfigs: "))
+    output = f"This is the raw mean: {mean}\n"
     std_dev = standard_deviation(mean_right_sigfig, n, data)
-    print("This is the raw standard deviation: ", std_dev)
-    std_dev_right_sigfig = float(input("Please enter the standard deviation of right sigfigs: "))
+    output += f"This is the raw standard deviation: {std_dev}\n"
     per_con = percent_confidence(mean_right_sigfig, n, std_dev_right_sigfig)
-    print(" ")
-    print("HERE GOES!!!")
-    print(f"Mean: {mean}")
-    print(f"Standard deviation: {std_dev}")
-    print(f"Percent confidence interval (90%): {per_con}")
-
-
-def data_calculator(n):
-    data = []
-    
-    for i in range(n):
-        point = float(input(f"Enter data point {i + 1}: "))
-        data.append(point)
-    
-    return data
+    output += f"Mean: {mean}\n"
+    output += f"Standard deviation: {std_dev}\n"
+    output += f"Percent confidence interval (90%): {per_con}\n"
+    return output
 
 
 def mean_calculator(data):
@@ -83,12 +55,28 @@ def percent_confidence(mean, n, std_dev):
 
     return per_con
 
-def sigfiginfodump():
-    print("You should already know at this point... but sure")
-    print("For volumes it's 3 sigfigs and for masses it's also 3.")
-    print("For example: 0.131 mL, 13.0 mL, 0.0131 g, 130 g... etc. etc.")
-    print("For standard deviation and stuff it just depends on the sigfig of the other values.")
-    print("Let's say the average was 0.99939... it should be rounded to 3 sigfigs where it becomes 0.999")
-    print("Use that sigfigs to calculate the standard deviation and stuff... but it's ok this is why this program exists.")
+@app.route('/')
+def index():
+    return open('index.html').read()
 
-main()
+@app.route('/execute', methods=['GET'])
+def execute_command():
+    # Retrieve query parameters
+    command = request.args.get('command')
+    n = int(request.args.get('n', 5))  # Default to 5 data points
+    data_points = request.args.get('data_points', '1,2,3,4,5')  # Default data points
+    mean_right_sigfig = float(request.args.get('mean_right_sigfig', 3.0))  # Default sigfigs
+    std_dev_right_sigfig = float(request.args.get('std_dev_right_sigfig', 2.0))  # Default sigfigs
+    
+    if command == 'L':  # Proceed if the command is 'L'
+        try:
+            # Call the functions with the parameters received
+            output = functions(n, data_points, mean_right_sigfig, std_dev_right_sigfig)
+            return output
+        except Exception as e:
+            return f"Error: {str(e)}"
+    else:
+        return "Invalid command"
+
+if __name__ == "__main__":
+    app.run(debug=True)

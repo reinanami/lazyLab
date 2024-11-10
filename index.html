@@ -1,6 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LazyLab</title>
+    <style>
+        body {
+            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            margin: 20px;
+            padding: 0;
+            background-color: #ffffff;
+        }
+        h1 {
+            color: #000000;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            font-size: 14px;
+            width: 300px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
 <body>
-    <h1>Welcome to lazyLab</h1>
+    <h1>Welcome to LazyLab</h1>
+    <h2>Nobody likes sigfigs. But instead of coping, you can shorten your lab report time!</h2>
+    <button onclick="showDataForm()">Press here to get started</button>
+    
+    <!-- Input Form for Data Points -->
+    <div id="dataForm" style="display:none;">
+        <h3>Enter Your Data Points (comma-separated):</h3>
+        <input type="text" id="dataInput" placeholder="e.g. 1,2,3,4,5">
+        <br><br>
+        <button onclick="executeCommand()">Submit Data and Calculate</button>
+    </div>
+    
+    <h2>Computah: </h2>
+    <pre id="output"></pre>
+    
+    <script>
+        // Show data input form when button is clicked
+        function showDataForm() {
+            document.getElementById('dataForm').style.display = 'block';
+        }
+        
+        function executeCommand() {
+            // Get the values from the user
+            let data_points = document.getElementById('dataInput').value;  // Get user input for data points
+            if (!data_points) {
+                alert("Please enter some data points!");
+                return;
+            }
+
+            // Default values for n, sigfigs
+            let n = data_points.split(',').length;  // Count the number of data points
+            let mean_right_sigfig = 3.0;  // Default mean sigfigs
+            let std_dev_right_sigfig = 2.0;  // Default std dev sigfigs
+
+            // Send the command to the backend using AJAX with necessary parameters
+            fetch(`/execute?command=L&n=${n}&mean_right_sigfig=${mean_right_sigfig}&std_dev_right_sigfig=${std_dev_right_sigfig}&data_points=${data_points}`)
+                .then(response => response.text())
+                .then(data => {
+                    // Update the webpage with the command output
+                    document.getElementById('output').textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('output').textContent = "Error: " + error;
+                });
+        }
+    </script>
 </body>
 </html>
