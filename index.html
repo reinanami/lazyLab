@@ -1,49 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LazyLab</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        #result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    </style>
-</head>
 <body>
     <h1>Welcome to lazyLab</h1>
-    <form id="commandForm">
-        <input type="text" id="command" placeholder="Enter command" required>
-        <button type="submit">Run</button>
-    </form>
-    <div id="result"></div>
-
-    <script>
-        function main(command) {
-            // Basic command processing example
-            return `You entered: ${command}`;
-        }
-
-        document.getElementById('commandForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            const commandInput = document.getElementById('command').value;
-            const result = main(commandInput);
-            document.getElementById('result').innerText = result; // Display the result
-            document.getElementById('command').value = ''; // Clear the input
-        });
-    </script>
 </body>
 </html>
